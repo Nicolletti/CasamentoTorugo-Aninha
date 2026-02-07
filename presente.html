@@ -15,7 +15,7 @@
 <section class="card">
 <h2>Lista de Presentes</h2>
 
-<p> Lembrando que aceitamos qualquer valor em dinheiro também, para ajudar na nossa lua de mel e na construção do nosso lar! (Chave pix no final da página) </p>
+<p> Lembrando que aceitamos qualquer valor em dinheiro também, para ajudar na nossa lua de mel e na construção do nosso lar! (Chave pix: ananicolletti@gmail.com) </p>
 
 <div class="presentes-grid">
 <div class="presente-card" data-id="gift-1" data-price="400.00">
@@ -206,7 +206,7 @@
       const id = card.dataset.id;
       if (id && idsInCart.has(id)) card.remove();
     });
-
+  
     updateMiniCart();
 
     document.querySelectorAll('.add-to-cart').forEach(btn => {
@@ -226,9 +226,11 @@
         card.remove();
         updateMiniCart();
       });
+      
     });
   });
 </script>
 
 </body>
+
 </html>
