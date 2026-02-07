@@ -1,0 +1,95 @@
+</head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<title>Compra - Victor Hugo & Ana Carolina</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+	<h1 class="casal">Victor Hugo & Ana Carolina</h1>
+</header>
+
+<section class="card">
+	<h2>Seu Carrinho</h2>
+	<div id="cart-container"></div>
+	<div id="cart-summary" class="destaque"></div>
+
+	<div style="margin-top:16px">
+        <a class="btn" href="presente.html">← Voltar para Presentes</a>
+		<button id="copy-pix" class="btn">Copiar chave PIX</button>
+		<button id="clear-cart" class="btn">Limpar carrinho</button>
+	</div>
+</section>
+
+<script>
+	function formatBRL(value) {
+		return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+	}
+
+	function getCart() { try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch (e) { return []; } }
+	function saveCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); }
+
+	function renderCart() {
+		const cart = getCart();
+		const container = document.getElementById('cart-container');
+		container.innerHTML = '';
+		if (!cart.length) {
+			container.innerHTML = '<p>Seu carrinho está vazio.</p>';
+			document.getElementById('cart-summary').textContent = '';
+			return;
+		}
+
+		cart.forEach((item, idx) => {
+			const el = document.createElement('div');
+			el.className = 'presente';
+			el.innerHTML = `
+				<div style="display:flex;gap:12px;align-items:center">
+					<img src="${item.img}" alt="" style="width:100px;height:80px;object-fit:cover;border-radius:8px">
+					<div style="flex:1">
+						<h3>${item.title}</h3>
+						<p class="valor">${formatBRL(item.price)}</p>
+					</div>
+					<div>
+						<button data-idx="${idx}" class="btn remove-item">Remover</button>
+					</div>
+				</div>
+			`;
+			container.appendChild(el);
+		});
+
+		const total = cart.reduce((s, i) => s + Number(i.price), 0);
+		document.getElementById('cart-summary').innerHTML = `Total: <strong>${formatBRL(total)}</strong>`;
+
+		document.querySelectorAll('.remove-item').forEach(btn => {
+			btn.addEventListener('click', function() {
+				const idx = Number(this.dataset.idx);
+				const c = getCart();
+				c.splice(idx, 1);
+				saveCart(c);
+				renderCart();
+			});
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', function() {
+		renderCart();
+
+		document.getElementById('copy-pix').addEventListener('click', function() {
+			const chave = 'ananicolletti@gmail.com';
+			navigator.clipboard.writeText(chave).then(()=>{
+				alert('Chave pix copiada!\nAna Carolina Araújo Nicolletti\nBanco Inter');
+			}).catch(()=>alert('Erro ao copiar chave PIX'));
+		});
+
+		document.getElementById('clear-cart').addEventListener('click', function(){
+			if (!confirm('Limpar todo o carrinho?')) return;
+			localStorage.removeItem('cart');
+			renderCart();
+		});
+	});
+</script>
+
+</body>
+</html>
